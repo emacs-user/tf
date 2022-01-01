@@ -1,0 +1,12 @@
+Настройка tf-auto-task-scheduling
+
+#+BEGIN_SRC emacs-lisp
+  (setq tf-id-to-sort-file-path "~/pro/tmp/id-to-sort")
+  (global-set-key (kbd "C-<f12>") 'tf-auto-task-scheduling)
+  (define-key org-mode-map (kbd "C-c C-s") 'tf-org-schedule-force-note)
+  (define-key org-mode-map (kbd "C-c C-d") 'tf-org-deadline-force-note)
+  (define-key org-mode-map (kbd "<f9> e")  'tf-effort-set)
+  (setq tf-work-day-begin    "09:00")
+  (setq tf-work-day-end      "18:00")
+  (setq tf-work-day-duration "06:00")
+#+END_SRC
