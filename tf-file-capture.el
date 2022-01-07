@@ -33,7 +33,7 @@
     "Finish editing a new Org entry"
     (org-id-copy)
     (dolist (file tf--dired-file-list)
-            (org-attach-attach file nil 'cp))
+            (org-attach-attach file nil 'mv))
     (setq tf--dired-file-list nil)
     (remove-hook 'org-capture-before-finalize-hook
                  'tf--dired-org-capture-finalize))
@@ -51,7 +51,8 @@
                     (org-id-goto (tf--helm-get-org-id))
                     (org-id-copy)
                     (dolist (file tf--dired-file-list)
-                        (org-attach-attach file nil 'cp))))
+                        (org-attach-attach file nil 'mv))))
+            (revert-buffer)
             (setq tf--dired-file-list nil))
         (message "You are not in the Dired buffer!")))
 

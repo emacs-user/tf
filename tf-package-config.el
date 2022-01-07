@@ -65,6 +65,11 @@
   :commands (telega)
   :defer t
   :config
+  (setq telega-chat-show-avatars nil
+        telega-active-locations-show-avatars nil
+        telega-company-username-show-avatars nil
+        telega-root-show-avatars nil
+        telega-user-show-avatars nil)
   (add-to-list 'exec-path "/usr/local/include")
   (add-to-list 'exec-path "/usr/local/lib"))
 
@@ -85,27 +90,19 @@
   (rainbow-delimiters-mode))
 
 (use-package helm
-  ;; :init
-  ;; (add-to-list 'load-path
-  ;; 	       "~/.emacs.d/noelpa/helm")
-  ;; (load-file "~/.emacs.d/noelpa/helm/helm-config.el")
   :config
   (helm-mode 1)
   (global-set-key (kbd "<f5>") 'helm-M-x)
   (global-set-key (kbd "C-o") 'helm-find-files)
   (global-set-key (kbd "C-x C-f") 'helm-find-files))
 
-;; (use-package auto-complete
-;;   :config
-;;   (ac-config-default)
-;;   (auto-complete-mode))
 
 (use-package company
   :diminish company-mode
   :config
   (setq company-backends (remove 'company-ropemacs company-backends)
-	company-tooltip-limit 20
-	company-tooltip-align-annotations t)
+	    company-tooltip-limit 20
+	    company-tooltip-align-annotations t)
   (global-company-mode 1))
 
 (use-package yasnippet
@@ -164,35 +161,39 @@
         smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 587
         smtpmail-queue-mail t
-        smtpmail-queue-dir "~/mail/Исходящие/cur"
+        smtpmail-queue-dir "~/Maildir/Исходящие/cur"
         mu4e-headers-sort-direction 'ascending)
   (setq mu4e-bookmarks
         `( ,(make-mu4e-bookmark
              :name  "Не прочитанные"
-             :query "flag:unread AND NOT flag:trashed"
+             :query "flag:unread AND NOT maildir:/G/Спам"
              :key ?u)
            ,(make-mu4e-bookmark
              :name "Сегодня"
-             :query "date:today..now AND NOT flag:trashed"
+             :query "date:today..now AND NOT maildir:/G/Спам"
              :key ?t)
            ,(make-mu4e-bookmark
              :name "За последние 7 дней"
-             :query "date:7d..now AND NOT flag:trashed"
+             :query "date:7d..now AND NOT maildir:/G/Спам"
              :key ?w)
            ,(make-mu4e-bookmark
              :name "С изображениями"
-             :query "mime:image/* AND NOT flag:trashed"
+             :query "mime:image/* AND NOT maildir:/G/Спам"
              :key ?p)
            ,(make-mu4e-bookmark
              :name  "Не обработанные"
-             :query "flag:unread AND maildir:/Входящие AND NOT flag:trashed"
+             :query "flag:unread AND maildir:/G/Входящие"
              :key ?b)))
   (setq mu4e-headers-fields
-        '((:date          .  12)
+        '((:human-date    .  12)
           (:from          .  22)
           (:subject       .  nil)))
+  (setq mu4e-headers-date-format "%Y-%m-%d"
+        mu4e-headers-time-format "%H:%M")
   (add-hook 'message-mode-hook 'turn-on-orgtbl)
   (require 'org-mu4e)
+  (setq mu4e-org-support t
+        mu4e-org-link-query-in-headers-mode nil)
   (require 'mu4e-contrib)
   (setq mu4e-html2text-command 'mu4e-shr2text)
   (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t))
@@ -247,17 +248,17 @@
   (setq org-default-notes-file "~/pro/org/inbox.org")
   (setq org-capture-templates
       (quote (("н" "Новая задача" entry (file "~/pro/org/inbox.org")
-	       "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n" :clock-in t :clock-resume t)
+	       "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
 	      ("з" "Заметка" entry (file "~/pro/org/inbox.org")
-	       "* %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n" :clock-in t :clock-resume t)
+	       "* %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
 	      ("к" "Новый контакт" entry (file "~/pro/org/contacts.org")
 	       "* %^{ФИО}%^{ORG}p%^{TITLE}p%^{PHONE}p%^{EMAIL}p")
 	      ("в" "Встреча" entry (file "~/pro/org/inbox.org")
-	       "* MEET %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n" :clock-in t :clock-resume t)
+	       "* MEET %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
 	      ("т" "Звонок" entry (file "~/pro/org/inbox.org")
-	       "* PHONE %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n" :clock-in t :clock-resume t)
+	       "* PHONE %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
 	      ("х" "Habit" entry (file "~/pro/org/inbox.org")
-	       "* NEXT %?\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))  
+	       "* NEXT %?\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n:LOGBOOK:\n:END:"))))  
   (add-hook 'org-clock-out-hook 'bh/remove-empty-drawer-on-clock-out 'append)
   (setq org-use-property-inheritance t)
   
@@ -428,7 +429,9 @@
 
 (use-package helm-org
   :config
-  (global-set-key (kbd "<f9> <f9>") 'helm-org-capture-templates))
+    (global-set-key (kbd "<f9> <f9>") 'helm-org-capture-templates))
+
+;(add-to-list 'helm-completing-read-handlers-alist '(org-set-tags-command . helm-org-completing-read-tags))
 
 (load-file "~/.emacs.d/noelpa/emacs-calfw/calfw.el")
 (load-file "~/.emacs.d/noelpa/emacs-calfw/calfw-org.el")
@@ -461,3 +464,11 @@
   (load-file "~/.emacs.d/noelpa/helm-org-contacts/helm-org-contacts.el")
   :config
   (global-set-key (kbd "<f9> k") 'helm-org-contacts))
+
+(use-package crux
+  :bind (("C-c o" . crux-open-with)
+         ("C-a" . crux-move-beginning-of-line)))
+
+(use-package auto-dim-other-buffers
+    :init
+    (auto-dim-other-buffers-mode t))
