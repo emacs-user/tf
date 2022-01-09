@@ -221,7 +221,7 @@
 	   (gnuplot . t))))
   (turn-on-visual-line-mode)
   (org-indent-mode)
-  (setq org-agenda-files (list "~/pro/contacts.org" "~/pro/org/"))
+  (setq org-agenda-files (list "~/pro/org/"))
   (add-to-list 'org-emphasis-alist
 	       '("=" (:foreground "red")))
   (setq org-priority-highest ?A)
@@ -460,7 +460,7 @@
   :init
   (load-file "~/.emacs.d/noelpa/org-contacts.el")
   (require 'org-contacts)
-  (setq org-contacts-files '("~/pro/contacts.org"))
+  (setq org-contacts-files '("~/pro/org/contacts.org"))
   (load-file "~/.emacs.d/noelpa/helm-org-contacts/helm-org-contacts.el")
   :config
   (global-set-key (kbd "<f9> k") 'helm-org-contacts))
