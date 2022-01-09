@@ -668,3 +668,9 @@
       (let ((begin (search-forward-regexp "." nil t (line-end-position)))
             (end (line-end-position)))
         ))))
+
+(defun tf-clock-in-and-narrow ()
+    "Clock in and narrow task on point"
+    (interactive)
+    (org-clock-in)
+    (org-narrow-to-subtree))

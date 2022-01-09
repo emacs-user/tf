@@ -259,7 +259,7 @@
 	       "* PHONE %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
 	      ("х" "Habit" entry (file "~/pro/org/inbox.org")
 	       "* NEXT %?\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n:LOGBOOK:\n:END:"))))  
-  (add-hook 'org-clock-out-hook 'bh/remove-empty-drawer-on-clock-out 'append)
+  (add-hook 'org-clock-out-hook 'tf-remove-empty-drawer-on-clock-out 'append)
   (setq org-use-property-inheritance t)
   
   (global-set-key (kbd "<f9> 1 c") 'tf-mu4e-get-task-from-1c-mail)
@@ -301,7 +301,7 @@
   ;; Resume clocking task on clock-in if the clock is open
   (setq org-clock-in-resume t)
   ;; Change tasks to NEXT when clocking in
-  (setq org-clock-in-switch-to-state 'bh/clock-in-to-next)
+  (setq org-clock-in-switch-to-state 'tf--clock-in-to-next)
   ;; Separate drawers for clocking and logs
   (setq org-drawers (quote ("PROPERTIES" "LOGBOOK")))
   ;; Save clock data and state changes and notes in the LOGBOOK drawer
@@ -351,11 +351,11 @@
         (refile .      "%t: Задача перемещена")
         (clock-out .   "")))
 
-(global-set-key (kbd "<f9> I") 'bh/punch-in)
-(global-set-key (kbd "<f9> O") 'bh/punch-out)
+(global-set-key (kbd "<f9> I") 'tf-punch-in)
+(global-set-key (kbd "<f9> O") 'tf-punch-out)
 (global-set-key (kbd "<f11>") 'org-clock-goto)
-(global-set-key (kbd "C-<f11>") 'org-clock-in)
-(global-set-key (kbd "<f9> SPC") 'bh/clock-in-last-task)
+;;(global-set-key (kbd "C-<f11>") 'org-clock-in)
+(global-set-key (kbd "<f9> SPC") 'tf-clock-in-last-task)
 
 (setq org-clock-out-remove-zero-time-clocks t)
 
@@ -366,7 +366,7 @@
 
 (define-key org-mode-map (kbd "<f9> t") 'si/org-set-tags)
 
-(define-key org-mode-map (kbd "<f7>") 'org-narrow-to-subtree)
+(define-key org-mode-map (kbd "<f7>") 'tf-clock-in-and-narrow)
 (define-key org-mode-map (kbd "C-<f7>") 'widen)
 
 (define-key org-mode-map (kbd "<f9> n") 'org-add-note)
@@ -387,7 +387,7 @@
 (org-add-link-type "e1c" 'org-1c-open)
 
 
-(global-set-key (kbd "<f9> f") 'si/helm-org-agenda-files-headings)
+(global-set-key (kbd "<f9> f") 'tf-helm-org-agenda-files-headings)
 
 (global-set-key (kbd "<f9> F") 'org-search-view)
 
@@ -396,7 +396,7 @@
 
 (setq org-alphabetical-lists t)
 
-(add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
+(add-hook 'org-babel-after-execute-hook 'tf-display-inline-images 'append)
 (setq org-image-actual-width '(400))
 (setq org-babel-results-keyword "results")
 (setq org-confirm-babel-evaluate nil)
@@ -472,3 +472,7 @@
 (use-package auto-dim-other-buffers
     :init
     (auto-dim-other-buffers-mode t))
+
+(use-package dired-atool
+    :init
+    (dired-atool-setup))
