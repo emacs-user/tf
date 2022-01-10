@@ -42,13 +42,23 @@
   (string-equal system-type "darwin"))
 
 (require 'package)
-(setq package-archives '(("elpa" . "http://tromey.com/elpa/")
-			 ("gnu" . "http://elpa.gnu.org/packages/")
-			 ("marmalade" . "http://marmalade-repo.org/packages/")
-			 ("melpa-stable" . "http://stable.melpa.org/packages/")
-			 ("melpa" . "http://melpa.org/packages/")
-			 ("org" . "http://orgmode.org/elpa/")
-			 ("myelpa" . "~/pro/packages/")))
+(if (is-osx)
+    (setq package-archives '(("elpa" . "http://tromey.com/elpa/")
+			                 ("gnu" . "http://elpa.gnu.org/packages/")
+			                 ("marmalade" . "http://marmalade-repo.org/packages/")
+			                 ("melpa-stable" . "http://stable.melpa.org/packages/")
+			                 ("melpa" . "http://melpa.org/packages/")
+			                 ("org" . "http://orgmode.org/elpa/")
+			                 ("myelpa" . "~/pro/packages/"))))
+(if (is-linux)
+    (setq package-archives '(;("elpa" . "http://tromey.com/elpa/")
+			                 ;("gnu" . "http://elpa.gnu.org/packages/")
+			                 ;("marmalade" . "http://marmalade-repo.org/packages/")
+			                 ;("melpa-stable" . "http://stable.melpa.org/packages/")
+			                 ;("melpa" . "http://melpa.org/packages/")
+			                 ;("org" . "http://orgmode.org/elpa/")
+			                 ("myelpa" . "~/pro/packages/"))))
+
 (setq package-check-signature nil)
 (package-initialize)
 
@@ -319,9 +329,9 @@
   ;; Include current clocking task in clock reports
   (setq org-clock-report-include-clocking-task t)
   
-  (setq bh/keep-clock-running nil)
+  (setq tf--keep-clock-running nil)
 
-  (add-hook 'org-clock-out-hook 'bh/clock-out-maybe 'append)
+  (add-hook 'org-clock-out-hook 'tf--clock-out-maybe 'append)
 
   (require 'org-id)
 
@@ -361,10 +371,10 @@
 
 (setq org-time-stamp-rounding-minutes (quote (1 1)))
 
-(global-set-key (kbd "<f9> i") 'si/interrupt)
+(global-set-key (kbd "<f9> i") 'tf-interrupt)
 
 
-(define-key org-mode-map (kbd "<f9> t") 'si/org-set-tags)
+(define-key org-mode-map (kbd "<f9> t") 'tf-org-set-tags)
 
 (define-key org-mode-map (kbd "<f7>") 'tf-clock-in-and-narrow)
 (define-key org-mode-map (kbd "C-<f7>") 'widen)
@@ -382,7 +392,7 @@
 (define-key org-mode-map (kbd "C-c C-o") 'org-open-at-point)
 
 
-(define-key org-mode-map (kbd "<f9> l") 'si/org-insert-extension-link)
+(define-key org-mode-map (kbd "<f9> l") 'tf-org-insert-extension-link)
 
 (org-add-link-type "e1c" 'org-1c-open)
 
