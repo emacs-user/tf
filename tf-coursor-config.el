@@ -21,8 +21,8 @@
     (when input-method
       (activate-input-method current))))
 ;;
-(setq modifierKey "s") ; Default modifier key
-;;(setq modifierKey "M")
+(if (is-osx) (setq modifierKey "s")) ; Default modifier key
+(if (is-linux) (setq modifierKey "M"))
 ;;
 ;; cursor up
 (global-unset-key (kbd (concat modifierKey "-i")))
@@ -90,18 +90,36 @@
 (global-set-key (kbd (concat modifierKey "-z")) 'undo)
 ;;
 ;;
-;; move to window up
-(global-unset-key (kbd (concat modifierKey "-<up>")))
-(global-set-key (kbd (concat modifierKey "-<up>")) 'windmove-up)
-;; move to window up
-(global-unset-key (kbd (concat modifierKey "-<down>")))
-(global-set-key (kbd (concat modifierKey "-<down>")) 'windmove-down)
-;; move to window left
-(global-unset-key (kbd (concat modifierKey "-<left>")))
-(global-set-key (kbd (concat modifierKey "-<left>")) 'windmove-left)
-;; move to window right
-(global-unset-key (kbd (concat modifierKey "-<right>")))
-(global-set-key (kbd (concat modifierKey "-<right>")) 'windmove-right)
+(if (is-osx)
+    (progn
+        ;; move to window up
+        (global-unset-key (kbd "M-i"))
+        (global-set-key (kbd "M-i") 'windmove-up)
+        ;; move to window up
+        (global-unset-key (kbd "M-k"))
+        (global-set-key (kbd "M-k") 'windmove-down)
+        ;; move to window left
+        (global-unset-key (kbd "M-j"))
+        (global-set-key (kbd "M-j") 'windmove-left)
+        ;; move to window right
+        (global-unset-key (kbd "M-l"))
+        (global-set-key (kbd "M-l") 'windmove-right)))
+(if (is-linux) ;; with PC keyboard
+    (progn
+        (setq w32-pass-lwindow-to-system nil)
+        (setq w32-lwindow-modifier 'super)
+        ;; move to window up
+        (global-unset-key (kbd "s-i"))
+        (global-set-key (kbd "s-i") 'windmove-up)
+        ;; move to window up
+        (global-unset-key (kbd "s-k"))
+        (global-set-key (kbd "s-k") 'windmove-down)
+        ;; move to window left
+        (global-unset-key (kbd "s-j"))
+        (global-set-key (kbd "s-j") 'windmove-left)
+        ;; move to window right
+        (global-unset-key (kbd "s-l"))
+        (global-set-key (kbd "s-l") 'windmove-right)))
 ;;
 ;; Управление буферами
 ;; ===================
