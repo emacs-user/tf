@@ -1,0 +1,5 @@
+* Task 1                                                             :manual:
+  :PROPERTIES:
+  :Effort:   2:00
+  :ID:       D90131A3-4973-4CB3-B68A-FBAC90B12520
+  :END:

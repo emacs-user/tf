@@ -209,213 +209,175 @@
   (add-to-list 'mu4e-view-actions '("ViewInBrowser" . mu4e-action-view-in-browser) t))
 
 (use-package org
-  :config
-  (global-set-key (kbd "C-c l") 'org-store-link)
-  (global-set-key (kbd "C-c C-l") 'org-insert-link)
-  (global-set-key (kbd "C-c C-o") 'org-open-at-point)
-  (setq org-id-link-to-org-use-id t)
-  (setq org-confirm-babel-evaluate nil
-	org-src-fontify-natively t
-	org-src-tab-acts-natively t)
-  (org-babel-do-load-languages
-   (quote org-babel-load-languages)
-   (quote ((emacs-lisp . t)
-	   (R . t)
-	   (python . t)
-	   (ruby . t)
-	   (shell . t)
-	   (org . t)
-	   (plantuml . t)
-	   (latex . t)
-	   (calc . t)
-	   (gnuplot . t))))
-  (turn-on-visual-line-mode)
-  (org-indent-mode)
-  (setq org-agenda-files (list "~/pro/org/"))
-  (add-to-list 'org-emphasis-alist
-	       '("=" (:foreground "red")))
-  (setq org-priority-highest ?A)
-  (setq org-priority-lowest ?D)
-  (setq org-priority-default ?C)
-  (setq org-plantuml-jar-path "~/.emacs.d/noelpa/plantuml-1.2021.16.jar")
-  (setq plantuml-default-exec-mode 'jar)
-  (setq org-todo-keywords
-	(quote ((sequence "TODO(1)" "NEXT(2@/!)" "|" "DONE(3@/!)")
-		(sequence "CONTROL(4@/!)" "MEET(5@/!)" "WAIT(6@/!)" "HOLD(7@/!)" "|" "CANCEL(8@/!)"))))
-  (setq org-todo-keyword-faces
-	(quote (("TODO"    :foreground "red"          :weight bold)
-		("NEXT"    :foreground "blue"         :weight bold)
-		("DONE"    :foreground "forest green" :weight bold)
-		("CONTROL" :foreground "orange"       :weight bold)
-		("WAIT"    :foreground "orange"       :weight bold)
-		("HOLD"    :foreground "magenta"      :weight bold)
-		("CANCEL"  :foreground "forest green" :weight bold)
-		("MEET"    :foreground "blue"         :weight bold))))
-  (setq org-use-fast-todo-selection t)
-  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
-  (global-set-key (kbd "<f9> q") 'org-todo)
-  (setq org-directory "~/pro/org")
-  (setq org-default-notes-file "~/pro/org/inbox.org")
-  (setq org-capture-templates
-      (quote (("н" "Новая задача" entry (file "~/pro/org/inbox.org")
-	       "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
-	      ("з" "Заметка" entry (file "~/pro/org/inbox.org")
-	       "* %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
-	      ("к" "Новый контакт" entry (file "~/pro/org/contacts.org")
-	       "* %^{ФИО}%^{ORG}p%^{TITLE}p%^{PHONE}p%^{EMAIL}p")
-	      ("в" "Встреча" entry (file "~/pro/org/inbox.org")
-	       "* MEET %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
-	      ("т" "Звонок" entry (file "~/pro/org/inbox.org")
-	       "* PHONE %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
-	      ("х" "Habit" entry (file "~/pro/org/inbox.org")
-	       "* NEXT %?\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n:LOGBOOK:\n:END:"))))  
-  (add-hook 'org-clock-out-hook 'tf-remove-empty-drawer-on-clock-out 'append)
-  (setq org-use-property-inheritance t)
-  
-  (global-set-key (kbd "<f9> 1 c") 'tf-mu4e-get-task-from-1c-mail)
-  
-  (global-set-key (kbd "<f12>") 'org-agenda)
+    :bind (("C-c l" . org-store-link)
+           ("<f12>" . org-agenda)
+           ("C-<f12>" . tf-auto-task-scheduling)
+           ("<f9> I" . tf-punch-in)
+           ("<f9> O" . tf-punch-out)
+           ("<f11>" . org-clock-goto)
+           ("C-<f11>" . org-clock-in)
+           ("<f9> SPC" . tf-clock-in-last-task)
+           ("<f9> i" . tf-interrupt)
+           ("<f9> f" . tf-helm-org-agenda-files-headings)
+           ("<f9> F" . org-search-view)
+           :map org-mode-map
+           ("<f9> e" . org-set-effort)
+           ("<f9> q" . org-todo)
+           ("<f9> t" . tf-org-set-tags)
+           ("<f7>" . tf-clock-in-and-narrow)
+           ("C-<f7>" . widen)
+           ("<f9> n" . org-add-note)
+           ("<f9> p" . org-set-property)
+           ("<f9> a" . org-attach-reveal)
+           ("<f9> A" . org-attach-reveal-in-emacs)
+           ("C-c C-l" . org-insert-link)
+           ("C-c C-o" . org-open-at-point)
+           ("<f9> l" . tf-org-insert-extension-link)
+           :map mu4e-headers-mode-map
+           ("<f9> 1 c" . tf-mu4e-get-task-from-1c-mail)
+           :map mu4e-view-mode-map
+           ("<f9> 1 c" . tf-mu4e-get-task-from-1c-mail)) 
 
-  (setq org-id-method (quote uuidgen))
-  (setq org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
+    :config
+    (require 'org-id)
+    
+    (turn-on-visual-line-mode)
+    (org-indent-mode)
+    (org-clock-persistence-insinuate)
+    
+    (setq org-id-link-to-org-use-id t
+          org-confirm-babel-evaluate nil
+	      org-src-fontify-natively t
+	      org-src-tab-acts-natively t
+          org-agenda-files (list "~/pro/org/")
+          org-priority-highest ?A
+          org-priority-lowest ?D
+          org-priority-default ?C
+          org-plantuml-jar-path "~/.emacs.d/noelpa/plantuml-1.2021.16.jar"
+          plantuml-default-exec-mode 'jar
+          org-use-fast-todo-selection t
+          org-treat-S-cursor-todo-selection-as-state-change nil
+          org-directory "~/pro/org"
+          org-default-notes-file "~/pro/org/inbox.org"
+          org-use-property-inheritance t
+          org-id-method 'uuidgen
+          org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id
+          org-refile-use-outline-path 'file
+          org-outline-path-complete-in-steps nil
+          org-refile-targets '((org-agenda-files :maxlevel . 20))
+          org-agenda-dim-blocked-tasks nil
+          org-agenda-compact-blocks t
+          org-deadline-warning-days -1
+          org-clock-history-length 23
+          org-clock-in-resume t
+          org-clock-in-switch-to-state 'tf--clock-in-to-next
+          org-drawers '("PROPERTIES" "LOGBOOK")
+          org-clock-into-drawer t
+          org-clock-out-remove-zero-time-clocks t
+          org-clock-out-when-done t
+          org-clock-persist t
+          org-clock-persist-query-resume nil
+          org-clock-auto-clock-resolution 'when-no-clock-is-running
+          org-clock-report-include-clocking-task t
+          tf--keep-clock-running nil
+          org-time-stamp-rounding-minutes '(1 1)
+          org-clock-out-remove-zero-time-clocks t
+          org-agenda-clockreport-parameter-plist '(:link t :maxlevel 5 :fileskip0 t :compact t :narrow 80)
+          org-agenda-log-mode-items '(closed state)
+          org-log-done 'time
+          org-log-into-drawer t
+          org-log-state-notes-insert-after-drawers nil
+          org-log-reschedule 'time
+          org-log-redeadline 'time
+          org-log-refile 'time
+          org-attach-method 'mv
+          org-archive-mark-done nil
+          org-archive-location "%s_archive::* Archived Tasks"
+          org-alphabetical-lists t
+          org-image-actual-width '(400)
+          org-babel-results-keyword "results"
+          org-confirm-babel-evaluate nil)
+    
+    (setq org-babel-do-load-languages
+          (quote org-babel-load-languages)
+          (quote ((emacs-lisp . t)
+	              (R . t)
+	              (python . t)
+	              (ruby . t)
+	              (shell . t)
+	              (org . t)
+	              (plantuml . t)
+	              (latex . t)
+	              (calc . t)
+	              (gnuplot . t))))
+    
+    (add-to-list 'org-emphasis-alist
+	             '("=" (:foreground "red")))
+    
+    (setq org-todo-keywords
+	      (quote ((sequence "TODO(1)" "NEXT(2@/!)" "|" "DONE(3@/!)")
+		          (sequence "CONTROL(4@/!)" "MEET(5@/!)" "WAIT(6@/!)" "HOLD(7@/!)" "|" "CANCEL(8@/!)"))))
+    
+    (setq org-todo-keyword-faces
+	      (quote (("TODO"    :foreground "red"          :weight bold)
+		          ("NEXT"    :foreground "blue"         :weight bold)
+		          ("DONE"    :foreground "forest green" :weight bold)
+		          ("CONTROL" :foreground "orange"       :weight bold)
+		          ("WAIT"    :foreground "orange"       :weight bold)
+		          ("HOLD"    :foreground "magenta"      :weight bold)
+		          ("CANCEL"  :foreground "forest green" :weight bold)
+		          ("MEET"    :foreground "blue"         :weight bold))))
 
-  (setq org-refile-use-outline-path 'file)
+    (setq org-capture-templates
+          (quote (("н" "Новая задача" entry (file "~/pro/org/inbox.org")
+	                   "* TODO %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
+	              ("з" "Заметка" entry (file "~/pro/org/inbox.org")
+	                   "* %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
+	              ("к" "Новый контакт" entry (file "~/pro/org/contacts.org")
+	                   "* %^{ФИО}%^{ORG}p%^{TITLE}p%^{PHONE}p%^{EMAIL}p")
+	              ("в" "Встреча" entry (file "~/pro/org/inbox.org")
+	                   "* MEET %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
+	              ("т" "Звонок" entry (file "~/pro/org/inbox.org")
+	                   "* PHONE %?\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:END:\n:LOGBOOK:\n:END:" :clock-in t :clock-resume t)
+	              ("х" "Habit" entry (file "~/pro/org/inbox.org")
+	                   "* NEXT %?\nSCHEDULED: %(format-time-string \"%<<%Y-%m-%d %a .+1d/3d>>\")\n:PROPERTIES:\n:CREATED: %U\n:CONTEXT: %a\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n:LOGBOOK:\n:END:"))))  
 
-  (setq org-outline-path-complete-in-steps nil)
-  (setq org-refile-targets '((org-agenda-files :maxlevel . 20)))
+    (setq org-agenda-custom-commands
+	      (quote ((" " "Расписание"
+		               ((agenda "" ((org-agenda-span 'day)))
+		                (tags "вхд"
+			                  ((org-agenda-overriding-header "ВХОДЯЩИЕ")
+			                   (org-tags-match-list-sublevels nil)))
+		                (alltodo ""
+			                     ((org-agenda-cmp-user-defined 'tf--agenda-sort)
+			                      (org-agenda-sorting-strategy '(user-defined-down))
+			                      (org-agenda-overriding-header "ПРИОРИТЕТЫ"))))))))
 
-  (setq org-agenda-dim-blocked-tasks nil)
-  (setq org-agenda-compact-blocks t)
-  (setq org-agenda-custom-commands
-	(quote ((" " "Расписание"
-		 ((agenda "" ((org-agenda-span 'day)))
-		  (tags "вхд"
-			((org-agenda-overriding-header "ВХОДЯЩИЕ")
-			 (org-tags-match-list-sublevels nil)))
-		  (alltodo ""
-			   ((org-agenda-cmp-user-defined 'tf--agenda-sort)
-			    (org-agenda-sorting-strategy '(user-defined-down))
-			    (org-agenda-overriding-header "ПРИОРИТЕТЫ"))))))))
+    (add-hook 'org-after-todo-state-change-hook 'tf--org-todo-state-change-property)
+    (add-hook 'org-clock-out-hook 'tf-remove-empty-drawer-on-clock-out 'append)
+    (add-hook 'org-clock-out-hook 'tf--clock-out-maybe 'append)
+    (add-hook 'org-babel-after-execute-hook 'tf-display-inline-images 'append)
 
-  (setq org-deadline-warning-days -1)
+    (setq org-columns-default-format "%80ITEM(Задача) %10Effort(Запланировано){:} %10CLOCKSUM(Потрачено)")
+    (setq org-global-properties (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 6:00 8:00")
+                                        ("STYLE_ALL" . "habit"))))
+    (setq org-log-note-headings
+          '((done .        "%t: Задача закрыта")
+            (state .       "%t: Статус изменен с %-9S на %-9s")
+            (note .        "%t: Заметка")
+            (reschedule .  "%t: Напоминание изменено с %S на %s")
+            (delschedule . "%t: Напоминание %S удалено")
+            (redeadline .  "%t: Срок изменен с %S на %s")
+            (deldeadline . "%t: Срок %S удален")
+            (refile .      "%t: Задача перемещена")
+            (clock-out .   "")))
 
-  (add-hook 'org-after-todo-state-change-hook 'tf--org-todo-state-change-property)
+    (org-add-link-type "e1c" 'org-1c-open)
 
-  (global-set-key (kbd "C-<f12>") 'tf-auto-task-scheduling)
-
-  ;; Resume clocking task when emacs is restarted
-  (org-clock-persistence-insinuate)
-  ;;
-  ;; Show lot of clocking history so it's easy to pick items off the C-F11 list
-  (setq org-clock-history-length 23)
-  ;; Resume clocking task on clock-in if the clock is open
-  (setq org-clock-in-resume t)
-  ;; Change tasks to NEXT when clocking in
-  (setq org-clock-in-switch-to-state 'tf--clock-in-to-next)
-  ;; Separate drawers for clocking and logs
-  (setq org-drawers (quote ("PROPERTIES" "LOGBOOK")))
-  ;; Save clock data and state changes and notes in the LOGBOOK drawer
-  (setq org-clock-into-drawer t)
-  ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
-  (setq org-clock-out-remove-zero-time-clocks t)
-  ;; Clock out when moving task to a done state
-  (setq org-clock-out-when-done t)
-  ;; Save the running clock and all clock history when exiting Emacs, load it on startup
-  (setq org-clock-persist t)
-  ;; Do not prompt to resume an active clock
-  (setq org-clock-persist-query-resume nil)
-  ;; Enable auto clock resolution for finding open clocks
-  (setq org-clock-auto-clock-resolution (quote when-no-clock-is-running))
-  ;; Include current clocking task in clock reports
-  (setq org-clock-report-include-clocking-task t)
-  
-  (setq tf--keep-clock-running nil)
-
-  (add-hook 'org-clock-out-hook 'tf--clock-out-maybe 'append)
-
-  (require 'org-id)
-
-  (setq org-time-stamp-rounding-minutes (quote (1 1)))
-(setq org-clock-out-remove-zero-time-clocks t)
-(setq org-agenda-clockreport-parameter-plist
-      (quote (:link t :maxlevel 5 :fileskip0 t :compact t :narrow 80)))
-(setq org-columns-default-format "%80ITEM(Задача) %10Effort(Запланировано){:} %10CLOCKSUM(Потрачено)")
-(setq org-global-properties (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 6:00 8:00")
-                                    ("STYLE_ALL" . "habit"))))
-(setq org-agenda-log-mode-items (quote (closed state)))
-(setq org-log-done 'time)
-(setq org-log-into-drawer t)
-(setq org-log-state-notes-insert-after-drawers nil)
-(setq org-log-reschedule nil)
-(setq org-log-redeadline nil)
-(setq org-log-refile 'time)
-
-(setq org-log-note-headings
-      '((done .        "%t: Задача закрыта")
-        (state .       "%t: Статус изменен с %-9S на %-9s")
-        (note .        "%t: Заметка")
-        (reschedule .  "%t: Напоминание изменено с %S на %s")
-        (delschedule . "%t: Напоминание %S удалено")
-        (redeadline .  "%t: Срок изменен с %S на %s")
-        (deldeadline . "%t: Срок %S удален")
-        (refile .      "%t: Задача перемещена")
-        (clock-out .   "")))
-
-(global-set-key (kbd "<f9> I") 'tf-punch-in)
-(global-set-key (kbd "<f9> O") 'tf-punch-out)
-(global-set-key (kbd "<f11>") 'org-clock-goto)
-;;(global-set-key (kbd "C-<f11>") 'org-clock-in)
-(global-set-key (kbd "<f9> SPC") 'tf-clock-in-last-task)
-
-(setq org-clock-out-remove-zero-time-clocks t)
-
-(setq org-time-stamp-rounding-minutes (quote (1 1)))
-
-(global-set-key (kbd "<f9> i") 'tf-interrupt)
-
-
-(define-key org-mode-map (kbd "<f9> t") 'tf-org-set-tags)
-
-(define-key org-mode-map (kbd "<f7>") 'tf-clock-in-and-narrow)
-(define-key org-mode-map (kbd "C-<f7>") 'widen)
-
-(define-key org-mode-map (kbd "<f9> n") 'org-add-note)
-
-(define-key org-mode-map (kbd "<f9> p") 'org-set-property)
-
-(define-key org-mode-map (kbd "<f9> a") 'org-attach-reveal)
-(define-key org-mode-map (kbd "<f9> A") 'org-attach-reveal-in-emacs)
-(setq org-attach-method 'mv)
-
-(global-set-key (kbd "C-c l") 'org-store-link)
-(define-key org-mode-map (kbd "C-c C-l") 'org-insert-link)
-(define-key org-mode-map (kbd "C-c C-o") 'org-open-at-point)
-
-
-(define-key org-mode-map (kbd "<f9> l") 'tf-org-insert-extension-link)
-
-(org-add-link-type "e1c" 'org-1c-open)
-
-
-(global-set-key (kbd "<f9> f") 'tf-helm-org-agenda-files-headings)
-
-(global-set-key (kbd "<f9> F") 'org-search-view)
-
-(setq org-archive-mark-done nil)
-(setq org-archive-location "%s_archive::* Archived Tasks")
-
-(setq org-alphabetical-lists t)
-
-(add-hook 'org-babel-after-execute-hook 'tf-display-inline-images 'append)
-(setq org-image-actual-width '(400))
-(setq org-babel-results-keyword "results")
-(setq org-confirm-babel-evaluate nil)
-
-(when (eq system-type 'darwin)
-  (global-set-key (kbd "s-<f9>") 'org-toggle-inline-images))
-
-(when (eq system-type 'windows-nt)
-  (global-set-key (kbd "M-<f9>") 'org-toggle-inline-images)))
+    (if (is-osx)
+        (global-set-key (kbd "s-<f9>") 'org-toggle-inline-images))
+    (if (is-linux)
+        (global-set-key (kbd "M-<f9>") 'org-toggle-inline-images)))
 
 (use-package calendar
   :config

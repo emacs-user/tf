@@ -459,8 +459,8 @@
 (defun tf-org-set-tags ()
   (interactive)
   (save-excursion
-    (outline-previous-visible-heading 1)
-    (org-set-tags)))
+    ;(outline-previous-visible-heading 1)
+    (org-set-tags-command)))
 
 
 (defun tf-helm-org-agenda-files-headings ()

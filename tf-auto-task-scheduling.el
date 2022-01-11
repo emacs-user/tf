@@ -34,14 +34,14 @@
 			    (setq effort (or (nth 3 (split-string (thing-at-point 'line t))) "00:15"))
 			    (setq plan-mode (or (nth 4 (split-string (thing-at-point 'line t))) "auto"))
 			    (if (not (and (tf--planning-today-p plan-date) (> dayeffort 0)))
-				(progn (setq plan-date (tf--move-plan-date-tomorrow plan-date))
-				       (setq dayeffort (tf-get-efficiency-time-today plan-date))))
+				    (progn (setq plan-date (tf--move-plan-date-tomorrow plan-date))
+				           (setq dayeffort (tf-get-efficiency-time-today plan-date))))
 			    (if (not (member "manual" (split-string plan-mode ":")))
-				(progn (with-temp-buffer (org-id-goto id)
-							 (org-entry-put (point)
-									"SCHEDULED"
-									(tf--org-get-time-stamp plan-date)))
-				       (setq dayeffort (- dayeffort (tf--convert-org-time-string-to-second effort)))))
+				    (progn (with-temp-buffer (org-id-goto id)
+							                 (org-entry-put (point)
+									                        "SCHEDULED"
+									                        (tf--org-get-time-stamp plan-date)))
+				           (setq dayeffort (- dayeffort (tf--convert-org-time-string-to-second effort)))))
 			    (next-line)))))))
 
 (defun tf--move-plan-date-tomorrow (plan-date)
@@ -100,47 +100,47 @@
      If the `date' value is set - returns the remaining effective time for this date."
   (if date
       (- (tf--convert-org-time-string-to-second tf-work-day-duration)
-	 (tf--get-manual-time-today date))
-    (- (tf--convert-org-time-string-to-second tf-work-day-duration)
-       (tf--get-manual-time-today)
-       (tf--get-other-time-today)
-       (tf--org-clock-sum-today))))
+	     (tf--get-manual-time-today date))
+      (- (tf--convert-org-time-string-to-second tf-work-day-duration)
+         (tf--get-manual-time-today)
+         (tf--get-other-time-today)
+         (tf--org-clock-sum-today))))
 
 (defun tf--get-other-time-today ()
   "Returns the time in seconds spent today on other tasks"
   (with-temp-buffer (org-id-goto tf--organization-task-id)
-		    (org-clock-sum-today)
-		    (tf--convert-org-time-string-to-second
-		     (or (org-entry-get (point) "CLOCKSUM_T") "00:00"))))
+		            (org-clock-sum-today)
+		            (tf--convert-org-time-string-to-second
+		             (or (org-entry-get (point) "CLOCKSUM_T") "00:00"))))
 
 (defun tf--get-manual-time-today (&optional date)
   "Returns the time in seconds scheduled today (on `date', if set) for manually scheduled tasks (tag - `manual`)"
   (save-restriction
-    (save-excursion
-      (let ((total 0)
-	    match)
-	(if date
-	    (setq match (format-time-string "<%Y-%m-%d>" date))
-	  (setq match (format-time-string "<%Y-%m-%d>" (current-time))))
-	(with-temp-buffer (org-tags-view t (concat "+manual+SCHEDULED=\"" match "\""))
-			  (if (> (count-lines (point-min) (point-max)) 2)
-			      (while (not (eq (line-number-at-pos) (count-lines (point-min) (point-max))))
-				(org-agenda-next-item 1)
-				(setq total (+ total
-					       (tf--convert-org-time-string-to-second
-						(or (org-entry-get (org-agenda-get-any-marker) "EFFORT") "0:15")))))))
-	total))))
+      (save-excursion
+          (let ((total 0)
+	            match)
+	          (if date
+	              (setq match (format-time-string "<%Y-%m-%d>" date))
+	              (setq match (format-time-string "<%Y-%m-%d>" (current-time))))
+	          (with-temp-buffer (org-tags-view t (concat "+manual+SCHEDULED=\"" match "\""))
+			                    (if (> (count-lines (point-min) (point-max)) 2)
+			                        (while (not (eq (line-number-at-pos) (count-lines (point-min) (point-max))))
+				                        (org-agenda-next-item 1)
+				                        (setq total (+ total
+					                                   (tf--convert-org-time-string-to-second
+						                                (or (org-entry-get (org-agenda-get-any-marker) "EFFORT") "0:15")))))))
+	          total))))
 
 (defun tf--org-clock-sum-today ()
-  "Visit each file in `org-agenda-files' and return the total time of today's
+    "Visit each file in `org-agenda-files' and return the total time of today's
      clocked tasks in second."
-  (let ((files (org-agenda-files))
-	(total 0))
-    (org-agenda-prepare-buffers files)
-    (dolist (file files)
-      (with-current-buffer (find-buffer-visiting file)
-	(setq total (+ total (org-clock-sum-today)))))
-    (* 60 total)))
+    (let ((files (org-agenda-files))
+	      (total 0))
+        (org-agenda-prepare-buffers files)
+        (dolist (file files)
+            (with-current-buffer (find-buffer-visiting file)
+	            (setq total (+ total (org-clock-sum-today)))))
+        (* 60 total)))
 
 (defun tf-task-priority-set ()
   "Sets actual priorities for all tasks with a TODO"
