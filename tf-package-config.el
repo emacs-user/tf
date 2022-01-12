@@ -254,7 +254,6 @@
           org-priority-lowest ?D
           org-priority-default ?C
           org-plantuml-jar-path "~/.emacs.d/noelpa/plantuml-1.2021.16.jar"
-          plantuml-default-exec-mode 'jar
           org-use-fast-todo-selection t
           org-treat-S-cursor-todo-selection-as-state-change nil
           org-directory "~/pro/org"
@@ -264,7 +263,7 @@
           org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id
           org-refile-use-outline-path 'file
           org-outline-path-complete-in-steps nil
-          org-refile-targets '((org-agenda-files :maxlevel . 20))
+          org-refile-targets '(org-agenda-files :maxlevel . 20)
           org-agenda-dim-blocked-tasks nil
           org-agenda-compact-blocks t
           org-deadline-warning-days -1
@@ -294,22 +293,22 @@
           org-archive-mark-done nil
           org-archive-location "%s_archive::* Archived Tasks"
           org-alphabetical-lists t
-          org-image-actual-width '(400)
+          org-image-actual-width 400
           org-babel-results-keyword "results"
           org-confirm-babel-evaluate nil)
     
-    (setq org-babel-do-load-languages
-          (quote org-babel-load-languages)
-          (quote ((emacs-lisp . t)
-	              (R . t)
-	              (python . t)
-	              (ruby . t)
-	              (shell . t)
-	              (org . t)
-	              (plantuml . t)
-	              (latex . t)
-	              (calc . t)
-	              (gnuplot . t))))
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+	   (R . t)
+	   (python . t)
+	   (ruby . t)
+	   (shell . t)
+	   (org . t)
+	   (plantuml . t)
+	   (latex . t)
+	   (calc . t)
+	   (gnuplot . t)))
     
     (add-to-list 'org-emphasis-alist
 	             '("=" (:foreground "red")))
@@ -395,37 +394,37 @@
 
 (use-package plantuml-mode
     :config
-    (setq plantuml-jar-path "~/.emacs.d/noelpa/plantuml-1.2021.16.jar")
-    (setq plantuml-default-exec-mode 'jar)
+    (setq plantuml-jar-path "~/.emacs.d/noelpa/plantuml-1.2021.16.jar"
+          plantuml-default-exec-mode 'jar)
     (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))
 
 (use-package helm-org
-  :config
-    (global-set-key (kbd "<f9> <f9>") 'helm-org-capture-templates))
+    :bind (("<f9> <f9>" . helm-org-capture-templates)))
 
-;(add-to-list 'helm-completing-read-handlers-alist '(org-set-tags-command . helm-org-completing-read-tags))
+(use-package calfw
+    :init
+    (load-file "~/.emacs.d/noelpa/emacs-calfw/calfw.el"))
 
-(load-file "~/.emacs.d/noelpa/emacs-calfw/calfw.el")
-(load-file "~/.emacs.d/noelpa/emacs-calfw/calfw-org.el")
-(use-package calfw)
 (use-package calfw-org
-  :config
-  (setq cfw:org-agenda-schedule-args '(:timestamp))
-  (global-set-key (kbd "<f9> c") 'cfw:open-org-calendar))
+    :init
+    (load-file "~/.emacs.d/noelpa/emacs-calfw/calfw-org.el")
+    :bind (("<f9> c" . cfw:open-org-calendar))
+    :config
+    (setq cfw:org-agenda-schedule-args '(:timestamp)))
 
 (use-package org-roam
-  :init
-  (setq org-roam-v2-ack t)
-  :custom
-  (org-roam-directory "~/pro/wiki")
-  (org-roam-completion-everywhere t)
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert)
-         :map org-mode-map
-         ("C-M-i"    . completion-at-point))
-  :config
-  (org-roam-setup))
+    :init
+    (setq org-roam-v2-ack t)
+    :custom
+    (org-roam-directory "~/pro/wiki")
+    (org-roam-completion-everywhere t)
+    :bind (("C-c n l" . org-roam-buffer-toggle)
+           ("C-c n f" . org-roam-node-find)
+           ("C-c n i" . org-roam-node-insert)
+           :map org-mode-map
+           ("C-M-i"    . completion-at-point))
+    :config
+    (org-roam-setup))
 
 (use-package helm-org-contacts
   :ensure nil
